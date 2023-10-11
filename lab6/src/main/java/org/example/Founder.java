@@ -1,26 +1,21 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 public final class Founder {
-    private final List<Thread> workers;
     private final Company company;
     public Founder(final Company company) {
-        this.workers = new ArrayList<>(company.getDepartmentsCount());
         this.company = company;
 
     }
-    public void start() throws InterruptedException {
+    public void start() throws InterruptedException, BrokenBarrierException {
         int departmentsCount = company.getDepartmentsCount();
+        CyclicBarrier barrier = new CyclicBarrier(departmentsCount);
         for (int i = 0; i < departmentsCount; i++){
-            Thread worker = new Thread(new Worker(company.getFreeDepartment(i)));
-            workers.add(worker);
-            worker.start();
+            new Thread(new Worker(company.getFreeDepartment(i), barrier));
         }
-        for (Thread worker : workers) {
-            worker.join();
-        }
+        barrier.await();
         company.showCollaborativeResult();
     }
 }

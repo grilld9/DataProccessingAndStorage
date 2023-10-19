@@ -18,6 +18,7 @@ public class Worker implements Runnable {
     public void run() {
         department.performCalculations();
         try {
+            System.out.println("Finished");
             barrier.await();
         } catch (InterruptedException | BrokenBarrierException e) {
             throw new RuntimeException(e);

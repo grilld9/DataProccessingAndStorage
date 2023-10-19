@@ -11,9 +11,9 @@ public final class Founder {
     }
     public void start() throws InterruptedException, BrokenBarrierException {
         int departmentsCount = company.getDepartmentsCount();
-        CyclicBarrier barrier = new CyclicBarrier(departmentsCount);
+        CyclicBarrier barrier = new CyclicBarrier(departmentsCount + 1, () -> System.out.println("Finished2"));
         for (int i = 0; i < departmentsCount; i++){
-            new Thread(new Worker(company.getFreeDepartment(i), barrier));
+            new Thread(new Worker(company.getFreeDepartment(i), barrier)).start();
         }
         barrier.await();
         company.showCollaborativeResult();

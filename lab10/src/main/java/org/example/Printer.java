@@ -2,23 +2,24 @@ package org.example;
 
 public class Printer extends Thread {
 
-    private int lastThreadPrinted = 1;
+    private final int printerId;
+    private Printer foreignPrinter;
+    private final Print print;
+    public Printer(int printerId, Print print) {
+        this.printerId = printerId;
+        this.print = print;
+    }
 
     public void run() {
-        int i = 1;
-        while (!isInterrupted() && i <= 10) {
-            if (printString(1, i)) {
-                i++;
+        for (int i = 0;i < 10; i++) {
+            synchronized (print) {
+                try {
+                    print.printString(printerId, i);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-    }
-    public synchronized boolean printString(int threadNumber, int stringNumber) {
-        if (threadNumber != lastThreadPrinted) {
-            System.out.println("Thread " + threadNumber + " printed string " + stringNumber);
-            lastThreadPrinted = threadNumber;
-            return true;
-        }
-        return false;
     }
 
 

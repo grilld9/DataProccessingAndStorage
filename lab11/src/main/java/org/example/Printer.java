@@ -15,6 +15,8 @@ public class Printer extends Thread {
             try {
                 childSemaphore.acquire();
                 System.out.println("Child thread prints string " + i);
+                String s;
+                s.
                 parentSemaphore.release();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
